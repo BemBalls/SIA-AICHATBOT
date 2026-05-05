@@ -1,19 +1,26 @@
-import 'package:omnichat/omni_chat/chat_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'omni_chat/themes/app_theme.dart';
+import 'omni_chat/providers/chat_session.dart';
+import 'omni_chat/screens/chat_screen.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MyApp());
+  runApp(const OmniChatApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class OmniChatApp extends StatelessWidget {
+  const OmniChatApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: OmniChatApp(),
+    return ChangeNotifierProvider(
+      create: (_) => ChatSessionProvider(),
+      child: MaterialApp(
+        title: 'OmniChat',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.dark,
+        home: const ChatScreen(),
+      ),
     );
   }
 }

@@ -1,86 +1,49 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'chat_message.dart';
+import '../models/chat_message.dart';
+import '../themes/app_theme.dart';
+import '../utilities/fade_slide_up.dart';
 
+/// A single chat bubble with entrance animation.
 class ChatBubble extends StatelessWidget {
-  final ChatMessage message;
-
   const ChatBubble({super.key, required this.message});
 
-  void _openFullscreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          backgroundColor: Colors.black,
-          appBar: AppBar(
-            backgroundColor: Colors.black,
-            iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          body: Center(
-            child: InteractiveViewer( 
-              panEnabled: true,
-              minScale: 0.5,
-              maxScale: 4.0,
-              child: kIsWeb
-                  ? Image.memory(message.imageBytes!)
-                  : Image.file(File(message.imagePath!)),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  final ChatMessage message; // ← only this, no separate 'content' field
 
   @override
   Widget build(BuildContext context) {
     final isUser = message.isUser;
 
-    return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.72),
-        decoration: BoxDecoration(
-          color: isUser ? const Color(0xFF1A1A1A) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (message.imagePath != null || message.imageBytes != null)
-              GestureDetector(
-                onTap: () => _openFullscreen(context), 
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: kIsWeb
-                      ? Image.memory(
-                          message.imageBytes!,
-                          fit: BoxFit.cover,
-                          width: 200,
-                          height: 200, 
-                        )
-                      : Image.file(
-                          File(message.imagePath!),
-                          fit: BoxFit.cover,
-                          width: 200,
-                          height: 200, 
-                        ),
-                ),
+    return FadeSlideUp(
+      child: Align(
+        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.78,
+          ),
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isUser ? AppTheme.userBubbleBg : AppTheme.botBubbleBg,
+              borderRadius: BorderRadius.only(
+                topLeft:     const Radius.circular(16),
+                topRight:    const Radius.circular(16),
+                bottomLeft:  Radius.circular(isUser ? 16 : 4),
+                bottomRight: Radius.circular(isUser ? 4 : 16),
               ),
-            if (message.text.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                child: Text(
-                  message.text,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: isUser ? Colors.white : const Color(0xFF1A1A1A),
-                  ),
-                ),
+              border: isUser
+                  ? null
+                  : Border.all(color: AppTheme.border, width: 0.8),
+            ),
+            child: Text(
+              message.content,
+              style: TextStyle(
+                color: isUser ? AppTheme.userBubbleText : AppTheme.botBubbleText,
+                fontSize: 14,
+                height: 1.5,
               ),
-          ],
+            ),
+          ),
         ),
       ),
     );
