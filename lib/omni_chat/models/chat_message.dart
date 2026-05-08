@@ -14,6 +14,8 @@ class ChatMessage {
     this.imageBytes,
   });
 
+  String get content => text;
+
   Map<String, dynamic> toJson() {
     return {
       'isUser': isUser,

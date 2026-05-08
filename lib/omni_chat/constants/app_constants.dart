@@ -11,6 +11,11 @@ class AppConstants {
   static const double bubbleBorderRadius = 16.0;
   static const double drawerWidth       = 280.0;
   static const double inputMaxLines     = 5.0;
+  static const List<String> starterPrompts = [
+    'Summarize my day in one sentence',
+    'Explain Flutter widgets simply',
+    'Give me a quick productivity tip',
+  ];
 
   // Durations
   static const Duration animShort  = Duration(milliseconds: 200);

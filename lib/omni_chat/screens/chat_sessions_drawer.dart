@@ -75,7 +75,7 @@ class ChatSessionsDrawer extends StatelessWidget {
                             onSelectSession(id);
                           },
                           tileColor: isActive
-                              ? AppTheme.accentDim.withOpacity(0.25)
+                              ? AppTheme.accentDim.withValues(alpha: 0.25)
                               : null,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 2),

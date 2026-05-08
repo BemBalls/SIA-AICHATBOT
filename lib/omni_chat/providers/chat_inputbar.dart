@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+
+import '../api/api_service.dart';
+import '../models/chat_message.dart';
 
 // ── Dark theme tokens (inline so this file is self-contained) ────────────────
 // If you have app_theme.dart set up, replace these with AppTheme.xxx
@@ -15,6 +19,55 @@ const _textPrimary   = Color(0xFFE8E8E8);
 const _textSecondary = Color(0xFFAAAAAA);
 const _textMuted     = Color(0xFF666666);
 const _disabled      = Color(0xFF3A3A3A);
+
+class ChatInputProvider extends ChangeNotifier {
+  ChatInputProvider({required this.sessionId});
+
+  final String sessionId;
+  String _draft = '';
+  bool _isLoading = false;
+
+  String get draft => _draft;
+  bool get hasDraft => _draft.trim().isNotEmpty;
+  bool get isLoading => _isLoading;
+
+  void updateDraft(String value) {
+    _draft = value;
+    notifyListeners();
+  }
+
+  void clearDraft() {
+    _draft = '';
+    notifyListeners();
+  }
+
+  Future<void> sendMessage(
+    String prompt,
+    List<ChatMessage> messages,
+    void Function(ChatMessage) addMessage,
+  ) async {
+    if (prompt.trim().isEmpty || _isLoading) return;
+
+    _isLoading = true;
+    notifyListeners();
+
+    final userMessage = ChatMessage(isUser: true, text: prompt);
+    addMessage(userMessage);
+
+    try {
+      final response = await ApiService.instance.sendMessage(prompt);
+      addMessage(ChatMessage(isUser: false, text: response));
+    } catch (error) {
+      addMessage(ChatMessage(
+        isUser: false,
+        text: 'Unable to load response. Please try again.',
+      ));
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
 
 class ChatInputBar extends StatefulWidget {
   final TextEditingController controller;
