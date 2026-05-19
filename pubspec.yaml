@@ -4,22 +4,36 @@ publish_to: 'none'
 version: 0.1.0+1
 
 environment:
-  sdk: ^3.11.3
+  sdk: ^3.11.1
 
 dependencies:
   flutter:
     sdk: flutter
-  image_picker: ^1.0.0
-  shared_preferences: ^2.0.0
-  visibility_detector: ^0.4.0+2
-  provider: ^6.1.2
-  http: 1.6.0
+  http: ^1.6.0
+  smooth_page_indicator: ^1.1.0
+  image_picker: ^1.2.1
+  image_picker_platform_interface: ^2.11.1
+  shared_preferences: ^2.3.0
+  jwt_decoder: ^2.0.1
+  intl: ^0.18.0
+  syncfusion_flutter_charts: ^33.2.5
+  visibility_detector: ^0.4.0
+  flutter_secure_storage: ^10.0.0
+  collection: ^1.19.1
+  auto_size_text: ^3.0.0
+  google_fonts: ^6.2.1
+  uuid: ^4.5.3
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/jim_icon.png"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  mongo_chat_dart: ^1.0.0
-  
+  flutter_launcher_icons: ^0.14.4
+
 flutter:
   uses-material-design: true

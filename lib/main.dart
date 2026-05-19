@@ -1,26 +1,35 @@
+import 'package:omnichat/pages/jim_chat/chat_screen.dart';
+import 'package:omnichat/pages/welcome_and_auth/signin/signin.dart';
+import 'package:omnichat/widgets/response_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'omni_chat/themes/app_theme.dart';
-import 'omni_chat/providers/chat_session.dart';
-import 'omni_chat/screens/chat_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
-void main() {
-  runApp(const OmniChatApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final token = await DeviceStorage.getToken();
+
+  Widget home = const SignInScreen();
+
+  if (token != null && !JwtDecoder.isExpired(token)) {
+    home = JimChatApp(token: token);
+  }
+
+  runApp(MyApp(home: home));
 }
 
-class OmniChatApp extends StatelessWidget {
-  const OmniChatApp({super.key});
+class MyApp extends StatelessWidget {
+  final Widget home;
+
+  const MyApp({super.key, required this.home});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ChatSessionProvider(),
-      child: MaterialApp(
-        title: 'OmniChat',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.dark,
-        home: const ChatScreen(),
-      ),
+    return MaterialApp(
+      theme: ThemeData(textTheme: GoogleFonts.nunitoTextTheme()),
+      debugShowCheckedModeBanner: false,
+      home: home,
     );
   }
 }
